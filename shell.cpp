@@ -27,6 +27,7 @@ const char ** hash_char(){
         i++;
     }
     envv[i]=NULL;
+    return envv;
 } 
 
 struct Path {
@@ -106,8 +107,10 @@ void fork_exec(vector<string> vector_arg){
     arg [0] = program;
     for (size_t i = 0;  i < vector_arg.size()+1;  ++i){
         arg [i+1] = new char[vector_arg[i].size()];
-        //arg [i+1] = (vector_arg[i]).c_str();
-        memcpy(arg+i+1, vector_arg[i].c_str(), (vector_arg[i]).size()+1);
+        arg [i+1] = (vector_arg[i]).c_str();
+        
+        //make the next command gives no makefile error then uncomment the previous command 
+        //memcpy(arg + i + 1, (vector_arg[i]).c_str(), (vector_arg[i]).size()+1);
     }
   
     arg [vector_arg.size()+1] = NULL;  // end of arguments sentinel is NULL
