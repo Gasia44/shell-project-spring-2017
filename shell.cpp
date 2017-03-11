@@ -7,21 +7,23 @@ using std::cin;
 using std::endl;
 using std::stringstream;
 using std::unordered_map;
+using std::memcpy;
         
 unordered_map<string, string> env = {
+    ///this is just for try... instead of leaving it empty...
     {"RED","#FF0000"},
     {"GREEN","#00FF00"},
     {"BLUE","#0000FF"}
     };
  
 
-char ** hash_char(){
-    const char **envv= new char* [env.size()+1];
+const char ** hash_char(){
+    const char **envv= new const char* [env.size()+1];
     
     int i=0;
     for( const auto& n : env ) {
-        envv[i]=new string[strlen(n.first + "=" + n.second).c_str()]; 
-        memcpy((n.first + "=" + n.second).c_str(), envv[i],strlen(vector_arg[i])+1);
+        envv[i]=new char[(n.first + "=" + n.second).size()]; 
+        memcpy(envv+i, (n.first + "=" + n.second).c_str(),(n.first + "=" + n.second).size() +1);
         i++;
     }
     envv[i]=NULL;
@@ -103,8 +105,9 @@ void fork_exec(vector<string> vector_arg){
     const char **arg = new const char* [vector_arg.size()+2];  //extra space for program name and sentinel
     arg [0] = program;
     for (size_t i = 0;  i < vector_arg.size()+1;  ++i){
-        arg [i+1] = new string[vector_arg[i].size()];
-        memcpy((vector_arg[i]).c_str(),arg [i+1], strlen(vector_arg[i])+1;
+        arg [i+1] = new char[vector_arg[i].size()];
+        //arg [i+1] = (vector_arg[i]).c_str();
+        memcpy(arg+i+1, vector_arg[i].c_str(), (vector_arg[i]).size()+1);
     }
   
     arg [vector_arg.size()+1] = NULL;  // end of arguments sentinel is NULL
@@ -116,8 +119,8 @@ void fork_exec(vector<string> vector_arg){
     else if(pid == 0){
         //child
         //exec is execute
-        const char* environment=hash_char();
-        execve(program, (char **)arg, environment);
+        const char** environment=hash_char();
+        execve(program, (char **)arg, (char **)environment);
     }
     else{
         //parent
